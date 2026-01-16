@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>QueueLess Campus – Appointment Booking</title>
+        <title>QueueLess Campus</title>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -10,25 +10,17 @@
         <h2>Book an Appointment</h2>
 
         <form id="appointmentForm">
-            <label>Name</label>
-            <input type="text" id="name" required />
+            <label>Student Name</label>
+            <input type="text" id="studentName" required />
 
-            <label>Email</label>
-            <input type="email" id="email" required />
-
-            <label>Service</label>
-            <select id="service" required>
-                <option value="">Select a service</option>
-                <option value="Student Services">Student Services</option>
-                <option value="IT Support">IT Support</option>
-                <option value="Admin Office">Admin Office</option>
-            </select>
+            <label>Service Type</label>
+            <input type="text" id="serviceType" required />
 
             <label>Date</label>
-            <input type="date" id="date" required />
+            <input type="date" id="appointmentDate" required />
 
             <label>Time</label>
-            <input type="time" id="time" required />
+            <input type="time" id="appointmentTime" required />
 
             <button type="submit">Book Appointment</button>
         </form>

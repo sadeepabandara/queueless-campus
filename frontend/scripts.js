@@ -4,12 +4,11 @@ const message = document.getElementById('message');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const appointment = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        service: document.getElementById('service').value,
-        date: document.getElementById('date').value,
-        time: document.getElementById('time').value,
+    const data = {
+        studentName: document.getElementById('studentName').value,
+        serviceType: document.getElementById('serviceType').value,
+        appointmentDate: document.getElementById('appointmentDate').value,
+        appointmentTime: document.getElementById('appointmentTime').value,
     };
 
     try {
@@ -18,19 +17,19 @@ form.addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(appointment),
+            body: JSON.stringify(data),
         });
 
         if (response.ok) {
-            message.style.color = 'green';
             message.textContent = 'Appointment booked successfully!';
+            message.style.color = 'green';
             form.reset();
         } else {
-            message.style.color = 'red';
             message.textContent = 'Failed to book appointment.';
+            message.style.color = 'red';
         }
     } catch (error) {
+        message.textContent = 'Error connecting to server.';
         message.style.color = 'red';
-        message.textContent = 'Server error. Please try again.';
     }
 });
