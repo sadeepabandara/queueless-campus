@@ -1,117 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Book Appointment - QueueLess Campus</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <!-- Navigation Bar -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <h2>🎓 QueueLess Campus</h2>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li>
-                        <a href="appointment.html" class="active"
-                            >Book Appointment</a
-                        >
-                    </li>
-                    <li><a href="staff.html">Staff Dashboard</a></li>
-                </ul>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Appointment - QueueLess Campus</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🎓 QueueLess Campus</h2>
             </div>
-        </nav>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li>
+                    <a href="appointment.html" class="active">Book Appointment</a>
+                </li>
+                <li><a href="staff.html">Staff Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
 
-        <!-- Main Content -->
-        <div class="container">
-            <div class="page-header">
-                <h1>Book an Appointment</h1>
-                <p>Schedule your campus service appointment online</p>
-            </div>
-
-            <div class="form-container">
-                <form id="appointmentForm" class="appointment-form">
-                    <div class="form-group">
-                        <label for="studentName">Student Name *</label>
-                        <input
-                            type="text"
-                            id="studentName"
-                            name="studentName"
-                            required
-                            placeholder="Enter your full name"
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="serviceType">Service Type *</label>
-                        <select id="serviceType" name="serviceType" required>
-                            <option value="">Select a service</option>
-                            <option value="Student Services">
-                                Student Services
-                            </option>
-                            <option value="IT Support">IT Support</option>
-                            <option value="Library Services">
-                                Library Services
-                            </option>
-                            <option value="Financial Aid">Financial Aid</option>
-                            <option value="Academic Advising">
-                                Academic Advising
-                            </option>
-                            <option value="Career Counseling">
-                                Career Counseling
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="appointmentDate">Date *</label>
-                            <input
-                                type="date"
-                                id="appointmentDate"
-                                name="appointmentDate"
-                                required
-                            />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="appointmentTime">Time *</label>
-                            <input
-                                type="time"
-                                id="appointmentTime"
-                                name="appointmentTime"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="notes">Additional Notes (Optional)</label>
-                        <textarea
-                            id="notes"
-                            name="notes"
-                            rows="4"
-                            placeholder="Any specific requirements or information..."
-                        ></textarea>
-                    </div>
-
-                    <div id="message" class="message"></div>
-
-                    <button type="submit" class="btn btn-primary btn-large">
-                        Book Appointment
-                    </button>
-                </form>
-            </div>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1>Book an Appointment</h1>
+            <p>Schedule your campus service appointment online</p>
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>&copy; 2025 QueueLess Campus. All rights reserved.</p>
-        </footer>
+        <div class="form-container">
+            <form id="appointmentForm" class="appointment-form">
+                <div class="form-group">
+                    <label for="studentName">Student Name *</label>
+                    <input type="text" id="studentName" name="studentName" required
+                        placeholder="Enter your full name" />
+                </div>
 
-        <script src="appointment.js"></script>
-    </body>
+                <div class="form-group">
+                    <label for="serviceType">Service Type *</label>
+                    <select id="serviceType" name="serviceType" required>
+                        <option value="">Select a service</option>
+                        <option value="Student Services">
+                            Student Services
+                        </option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="Library Services">
+                            Library Services
+                        </option>
+                        <option value="Financial Aid">Financial Aid</option>
+                        <option value="Academic Advising">
+                            Academic Advising
+                        </option>
+                        <option value="Career Counseling">
+                            Career Counseling
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="appointmentDate">Date *</label>
+                        <input type="date" id="appointmentDate" name="appointmentDate" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentTime">Time *</label>
+                        <input type="time" id="appointmentTime" name="appointmentTime" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Additional Notes (Optional)</label>
+                    <textarea id="notes" name="notes" rows="4"
+                        placeholder="Any specific requirements or information..."></textarea>
+                </div>
+
+                <div id="message" class="message"></div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                    Book Appointment
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>📧 Email: support@queueless.edu.au</p>
+                <p>📞 Phone: (03) 9123 4567</p>
+                <p>📍 Location: Deakin University, Melbourne</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <p><a href="index.html">Home</a></p>
+                <p><a href="appointment.html">Book Appointment</a></p>
+                <p><a href="staff.html">Staff Dashboard</a></p>
+            </div>
+            <div class="footer-section">
+                <h4>About</h4>
+                <p>&copy; 2025 QueueLess Campus. All rights reserved.</p>
+                <p>Developed for SIT725 Project</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="appointment.js"></script>
+</body>
+
 </html>

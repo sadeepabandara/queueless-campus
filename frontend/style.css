@@ -478,6 +478,7 @@ body {
         transform: translateY(-50px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -538,6 +539,63 @@ body {
 .footer p {
     margin: 0.25rem 0;
 }
+
+.footer-content {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 2rem;
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    text-align: left;
+
+}
+
+.footer-section h4 {
+
+    margin-bottom: 1rem;
+
+    font-size: 1.2rem;
+
+}
+
+.footer-section p {
+
+    margin: 0.5rem 0;
+
+}
+
+.footer-section a {
+
+    color: white;
+
+    text-decoration: none;
+
+}
+
+.footer-section a:hover {
+
+    text-decoration: underline;
+
+}
+
+@media (max-width: 768px) {
+
+    .footer-content {
+
+        grid-template-columns: 1fr;
+
+        text-align: center;
+
+    }
+
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
