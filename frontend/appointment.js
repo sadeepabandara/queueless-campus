@@ -1,4 +1,9 @@
 // appointment.js - Handles appointment booking functionality
+const role = localStorage.getItem("userRole");
+if (role !== "student") {
+  alert("Unauthorized access! Students only.");
+  window.location.href = "login.html";
+}
 const API_URL = 'http://localhost:8080/api/appointments';
 
 const form = document.getElementById('appointmentForm');

@@ -1,3 +1,8 @@
+const role = localStorage.getItem("userRole");
+if (role !== "staff") {
+  alert("Unauthorized access! Staff only.");
+  window.location.href = "login.html";
+}
 const API_URL = 'http://localhost:8080/api/appointments';
 let allAppointments = [];
 
