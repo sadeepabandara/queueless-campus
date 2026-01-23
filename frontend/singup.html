@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - QueueLess Campus</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+    }
+    .signup-box {
+      width: 320px;
+      margin: 100px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+    }
+    button {
+      background: #2c3e50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #34495e;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+    .strength {
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="signup-box">
+  <h2>Sign Up</h2>
+
+  <label>Email:</label>
+  <input type="email" id="email" placeholder="Enter email">
+
+  <label>Password:</label>
+  <input type="password" id="password" placeholder="Create password" oninput="checkStrength()">
+  <div id="strengthText" class="strength"></div>
+
+  <label>Role:</label>
+  <select id="role">
+    <option value="">--Select Role--</option>
+    <option value="student">Student</option>
+    <option value="staff">Staff</option>
+  </select>
+
+  <button onclick="signup()">Sign Up</button>
+
+  <p id="errorMsg" class="error"></p>
+</div>
+
+<script>
+  function sanitize(input) {
+    return input.replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#x27;");
+  }
+
+  function checkStrength() {
+    const pwd = document.getElementById("password").value;
+    const strengthText = document.getElementById("strengthText");
+
+    if (pwd.length < 6) {
+      strengthText.textContent = "Weak password";
+      strengthText.style.color = "red";
+    } else if (/[A-Z]/.test(pwd) && /[0-9]/.test(pwd)) {
+      strengthText.textContent = "Strong password";
+      strengthText.style.color = "green";
+    } else {
+      strengthText.textContent = "Medium password";
+      strengthText.style.color = "orange";
+    }
+  }
+
+  function signup() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let role = document.getElementById("role").value;
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.textContent = "";
+
+    email = sanitize(email);
+    password = sanitize(password);
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+      errorMsg.textContent = "Invalid email format.";
+      return;
+    }
+
+    if (!email || !password || !role) {
+      errorMsg.textContent = "All fields are required.";
+      return;
+    }
+
+    if (password.length < 6) {
+      errorMsg.textContent = "Password must be at least 6 characters.";
+      return;
+    }
+
+    const user = { email, password, role };
+    localStorage.setItem("user", JSON.stringify(user));
+
+    alert("Account created securely!");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
