@@ -3,64 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Sign Up - QueueLess Campus</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-    }
-    .signup-box {
-      width: 320px;
-      margin: 100px auto;
-      padding: 20px;
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
-    input, select, button {
-      width: 100%;
-      padding: 8px;
-      margin-top: 8px;
-    }
-    button {
-      background: #2c3e50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #34495e;
-    }
-    .error {
-      color: red;
-      font-size: 14px;
-    }
-    .strength {
-      font-size: 13px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="signup-box">
+<div class="form-container">
   <h2>Sign Up</h2>
+  <form class="appointment-form">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter email" required>
+    </div>
 
-  <label>Email:</label>
-  <input type="email" id="email" placeholder="Enter email">
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Create password" oninput="checkStrength()" required>
+      <div id="strengthText" class="strength"></div>
+    </div>
 
-  <label>Password:</label>
-  <input type="password" id="password" placeholder="Create password" oninput="checkStrength()">
-  <div id="strengthText" class="strength"></div>
+    <div class="form-group">
+      <label for="role">Role:</label>
+      <select id="role" required>
+        <option value="">--Select Role--</option>
+        <option value="student">Student</option>
+        <option value="staff">Staff</option>
+      </select>
+    </div>
 
-  <label>Role:</label>
-  <select id="role">
-    <option value="">--Select Role--</option>
-    <option value="student">Student</option>
-    <option value="staff">Staff</option>
-  </select>
+    <button type="button" class="btn btn-primary btn-large" onclick="signup()">Sign Up</button>
 
-  <button onclick="signup()">Sign Up</button>
-
-  <p id="errorMsg" class="error"></p>
+    <div id="errorMsg" class="message error"></div>
+  </form>
 </div>
 
 <script>

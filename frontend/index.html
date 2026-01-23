@@ -1,130 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>QueueLess Campus - Home</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
+<head>
+  <meta charset="UTF-8">
+  <title>QueueLess Campus | Smart Appointment System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <body>
-        <!-- Navigation Bar -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <h2>🎓 QueueLess Campus</h2>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="appointment.html">Book Appointment</a></li>
-                    <li><a href="staff.html">Staff Dashboard</a></li>
-                    <li><a href="signup.html">Sign Up</a></li>
-                    <li><a href="login.html">Login</a></li>
-                </ul>
-            </div>
-        </nav>
+  <!-- Security Headers (Client-Side Intent) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Cache-Control" content="no-store">
 
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <div class="hero-content">
-                <h1>Welcome to QueueLess Campus</h1>
-                <p class="hero-subtitle">
-                    Smart Appointment & Wait-Time Management System
-                </p>
-                <p class="hero-description">
-                    Say goodbye to physical queues! Book campus service
-                    appointments online and manage your time efficiently.
-                </p>
-                <div class="hero-buttons">
-                    <a href="appointment.html" class="btn btn-primary"
-                        >Book an Appointment</a
-                    >
-                    <a href="staff.html" class="btn btn-secondary"
-                        >Staff Login</a
-                    >
-                </div>
-            </div>
-        </div>
+  <link rel="stylesheet" href="style.css">
+</head>
 
-        <!-- Features Section -->
-        <div class="features-section">
-            <h2 class="section-title">Why Choose QueueLess Campus?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📅</div>
-                    <h3>Easy Booking</h3>
-                    <p>
-                        Book appointments for campus services in just a few
-                        clicks
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⏱️</div>
-                    <h3>Save Time</h3>
-                    <p>No more waiting in long physical queues</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔔</div>
-                    <h3>Get Notified</h3>
-                    <p>Receive alerts for your upcoming appointments</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Staff Dashboard</h3>
-                    <p>Efficient appointment management for campus staff</p>
-                </div>
-            </div>
-        </div>
+<body>
 
-        <!-- Services Section -->
-        <div class="services-section">
-            <h2 class="section-title">Available Services</h2>
-            <div class="services-grid">
-                <div class="service-item">
-                    <h4>Student Services</h4>
-                    <p>
-                        Academic advising, enrollment assistance, transcript
-                        requests
-                    </p>
-                </div>
-                <div class="service-item">
-                    <h4>IT Support</h4>
-                    <p>Technical support, account setup, software assistance</p>
-                </div>
-                <div class="service-item">
-                    <h4>Library Services</h4>
-                    <p>Book reservations, research help, study room booking</p>
-                </div>
-                <div class="service-item">
-                    <h4>Financial Aid</h4>
-                    <p>
-                        Scholarship queries, payment plans, financial counseling
-                    </p>
-                </div>
-            </div>
-        </div>
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" aria-label="Main Navigation">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <h2>🎓 QueueLess Campus</h2>
+    </div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="appointment.html" id="bookLink">Book Appointment</a></li>
+      <li><a href="login.html" id="staffLink">Staff Login</a></li>
+      <li><a href="signup.html" id="signupLink">Sign Up</a></li>
+      <li><a href="login.html" id="loginLink">Login</a></li>
+    </ul>
+  </div>
+</nav>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <p>📧 Email: support@queueless.edu.au</p>
-                    <p>📞 Phone: (+61) 3 9918 9188</p>
-                    <p>📍 Location: Deakin University</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <p><a href="index.html">Home</a></p>
-                    <p><a href="appointment.html">Book Appointment</a></p>
-                    <p><a href="staff.html">Staff Dashboard</a></p>
-                </div>
-                <div class="footer-section">
-                    <h4>About</h4>
-                    <p>&copy; 2025 QueueLess Campus. All rights reserved.</p>
-                    <p>Developed for SIT725 Group Project</p>
-                </div>
-            </div>
-        </footer>
-    </body>
+<!-- ===================== HERO ===================== -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1>Welcome to QueueLess Campus</h1>
+    <p class="hero-subtitle">Smart Appointment & Queue Management System</p>
+    <p class="hero-description">
+      Eliminate physical queues by booking campus services online securely and efficiently.
+    </p>
+    <div class="hero-buttons">
+      <a href="appointment.html" class="btn btn-primary" id="heroBookBtn" role="button">Book Appointment</a>
+      <a href="login.html" class="btn btn-secondary" id="heroStaffBtn" role="button">Staff Login</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section class="features-section">
+  <h2 class="section-title">Why Choose QueueLess Campus?</h2>
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <h3>Easy Booking</h3>
+      <p>Book appointments quickly through a secure and intuitive interface.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⏱️</div>
+      <h3>Save Time</h3>
+      <p>Minimize waiting and manage your schedule efficiently.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <h3>Notifications</h3>
+      <p>Stay informed with timely appointment alerts.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Staff Dashboard</h3>
+      <p>Staff can securely manage appointments and queues.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== SERVICES ===================== -->
+<section class="services-section">
+  <h2 class="section-title">Available Services</h2>
+  <div class="services-grid">
+
+    <div class="service-item">
+      <h4>Student Services</h4>
+      <p>Academic advising, enrollment assistance, transcript requests.</p>
+    </div>
+
+    <div class="service-item">
+      <h4>IT Support</h4>
+      <p>Technical support, account setup, software assistance.</p>
+    </div>
+
+    <div class="service-item">
+      <h4>Library Services</h4>
+      <p>Research help, study rooms, book reservations.</p>
+    </div>
+
+    <div class="service-item">
+      <h4>Financial Aid</h4>
+      <p>Scholarships, payments, and financial counselling.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer-content">
+
+    <div class="footer-section">
+      <h4>Contact Us</h4>
+      <p>📧 support@queueless.edu.au</p>
+      <p>📞 (+61) 3 9918 9188</p>
+      <p>📍 Deakin University</p>
+    </div>
+
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <p><a href="index.html">Home</a></p>
+      <p><a href="appointment.html">Book Appointment</a></p>
+      <p><a href="login.html">Staff Login</a></p>
+    </div>
+
+    <div class="footer-section">
+      <h4>About</h4>
+      <p>&copy; 2025 QueueLess Campus</p>
+      <p>SIT725 Group Project</p>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ===================== SECURITY SCRIPT ===================== -->
+<script defer>
+  // ==========================
+  // Security: Role-Based Navigation Control
+  // ==========================
+  const role = localStorage.getItem("userRole");
+
+  const bookLink = document.getElementById("bookLink");
+  const staffLink = document.getElementById("staffLink");
+  const signupLink = document.getElementById("signupLink");
+  const loginLink = document.getElementById("loginLink");
+
+  // Hide login/signup if already logged in
+  if (role) {
+    signupLink.style.display = "none";
+    loginLink.style.display = "none";
+
+    // Add Logout dynamically
+    const logout = document.createElement("a");
+    logout.innerText = "Logout";
+    logout.href = "#";
+    logout.onclick = () => {
+      localStorage.clear();
+      location.reload();
+    };
+    document.getElementById("navMenu").appendChild(logout);
+  }
+
+  // Prevent unauthorized staff access
+  staffLink.addEventListener("click", function (e) {
+    if (role !== "staff") {
+      e.preventDefault();
+      alert("Staff only area. Please login as staff.");
+      window.location.href = "login.html";
+    }
+  });
+
+  // Prevent unauthorized appointment booking
+  bookLink.addEventListener("click", function (e) {
+    if (role !== "student") {
+      e.preventDefault();
+      alert("Students only. Please login as student.");
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+</body>
 </html>
