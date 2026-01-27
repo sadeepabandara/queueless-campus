@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - QueueLess Campus</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-box">
+  <h2>Login</h2>
+
+  <label>Email:</label>
+  <input type="email" id="loginEmail" placeholder="Enter email">
+
+  <label>Password:</label>
+  <input type="password" id="loginPassword" placeholder="Enter password">
+
+  <button id="loginBtn" onclick="login()">Login</button>
+
+  <p id="loginError" style="color:red;"></p>
+</div>
+
+<script>
+  let attempts = 0;
+
+  // XSS Protection
+  function sanitize(input) {
+    return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function login() {
+    const email = sanitize(document.getElementById("loginEmail").value);
+    const password = sanitize(document.getElementById("loginPassword").value);
+    const error = document.getElementById("loginError");
+    const button = document.getElementById("loginBtn");
+
+    error.textContent = "";
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // Authentication check
+    if (!user || user.email !== email || user.password !== password) {
+      attempts++;
+      error.textContent = "Invalid login credentials";
+
+      // Brute-force protection
+      if (attempts >= 3) {
+        error.textContent = "Too many attempts. Try again in 30 seconds.";
+        button.disabled = true;
+
+        setTimeout(() => {
+          attempts = 0;
+          button.disabled = false;
+          error.textContent = "";
+        }, 30000);
+      }
+      return;
+    }
+
+    // Reset attempts after success
+    attempts = 0;
+
+    // Save role for access control
+    localStorage.setItem("userRole", user.role);
+
+    // Simulate session timeout (5 minutes)
+    setTimeout(() => {
+      localStorage.clear();
+      alert("Session expired. Please login again.");
+      window.location.href = "login.html";
+    }, 300000);
+
+    // Redirect to main index page after login
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>
