@@ -20,6 +20,9 @@ mongoose
 const appointmentRoutes = require('./routes/appointments');
 app.use('/api/appointments', appointmentRoutes);
 
+const queueRoutes = require('./routes/queue');
+app.use('/api/queue', queueRoutes);
+
 // Test route
 app.get('/', (req, res) => {
     res.send('QueueLess Campus API running');

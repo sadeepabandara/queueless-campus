@@ -36,69 +36,62 @@ if (dateInput) {
 // Form Submission Handler
 // ==========================
 form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const originalText = submitBtn.textContent;
+    // Show loading state
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Booking...';
+    submitBtn.disabled = true;
 
-  // Security: Prevent multiple submissions (Race condition control)
-  submitBtn.textContent = 'Booking...';
-  submitBtn.disabled = true;
+    const data = {
+        studentName: document.getElementById('studentName').value.trim(),
+        serviceType: document.getElementById('serviceType').value,
+        appointmentDate: document.getElementById('appointmentDate').value,
+        appointmentTime: document.getElementById('appointmentTime').value,
+        notes: document.getElementById('notes').value.trim(),
+        status: 'Booked',
+    };
 
-  // ==========================
-  // Collect & Sanitize Inputs
-  // ==========================
-  const data = {
-    studentName: sanitize(document.getElementById('studentName').value.trim()),
-    serviceType: sanitize(document.getElementById('serviceType').value),
-    appointmentDate: document.getElementById('appointmentDate').value,
-    appointmentTime: document.getElementById('appointmentTime').value,
-    status: 'Booked',
-  };
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
 
-  // ==========================
-  // Security: Client-side Validation
-  // ==========================
-  if (!data.studentName || !data.serviceType || !data.appointmentDate || !data.appointmentTime) {
-    showMessage('✗ Please fill all required fields correctly.', 'error');
-    submitBtn.textContent = originalText;
-    submitBtn.disabled = false;
-    return;
-  }
+        if (response.ok) {
+            const result = await response.json();
+            showMessage(
+                "✓ Appointment booked successfully! We'll see you on " +
+                    formatDate(data.appointmentDate) +
+                    ' at ' +
+                    formatTime(data.appointmentTime),
+                'success',
+            );
+            form.reset();
 
-  // ==========================
-  // Security: CSRF Awareness (Frontend token)
-  // ==========================
-  const csrfToken = document.getElementById("csrfToken")?.value || "secure-token-placeholder";
-
-  try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken // Security: CSRF-aware request
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      showMessage(
-        "✓ Appointment booked successfully! We'll see you on " +
-          formatDate(data.appointmentDate) +
-          ' at ' +
-          formatTime(data.appointmentTime),
-        'success'
-      );
-      form.reset();
-      message.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      const error = await response.json();
-      showMessage(
-        '✗ Failed to book appointment: ' +
-          (error.error || 'Unknown error'),
-        'error'
-      );
+            // Scroll to message
+            message.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            const error = await response.json();
+            showMessage(
+                '✗ Failed to book appointment: ' +
+                    (error.error || 'Unknown error'),
+                'error',
+            );
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showMessage(
+            '✗ Error connecting to server. Please try again later.',
+            'error',
+        );
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
   } catch (error) {
     console.error('Error:', error);

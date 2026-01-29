@@ -1,163 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Staff Dashboard | QueueLess Campus</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Staff Dashboard - QueueLess Campus</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h2>🎓 QueueLess Campus</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="appointment.html">Book Appointment</a></li>
+                    <li><a href="queue.html">Join Queue</a></li>
+                    <li>
+                        <a href="staff.html" class="active">Staff Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-  <!-- Client-side Security Headers -->
-  <meta http-equiv="Cache-Control" content="no-store" />
-  <meta http-equiv="X-Frame-Options" content="DENY" />
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+        <!-- Main Content -->
+        <div class="container">
+            <div class="page-header">
+                <h1>Staff Dashboard</h1>
+                <p>Manage appointments and queues</p>
+            </div>
 
-  <link rel="stylesheet" href="style.css" />
-</head>
+            <!-- Tab Navigation -->
+            <div class="dashboard-tabs">
+                <button
+                    class="tab-button active"
+                    onclick="switchTab('appointments')"
+                    id="appointmentsTab"
+                >
+                    📅 Appointments
+                </button>
+                <button
+                    class="tab-button"
+                    onclick="switchTab('queue')"
+                    id="queueTab"
+                >
+                    👥 Virtual Queue
+                </button>
+            </div>
 
-<body>
+            <!-- ==================== APPOINTMENTS SECTION ==================== -->
+            <div id="appointmentsSection" class="tab-content active">
+                <!-- Appointments Controls -->
+                <div class="dashboard-controls">
+                    <div class="filter-group">
+                        <label for="filterDate">Filter by Date:</label>
+                        <input
+                            type="date"
+                            id="filterDate"
+                            class="filter-input"
+                        />
+                        <button
+                            onclick="filterAppointmentsByDate()"
+                            class="btn btn-secondary"
+                        >
+                            Filter
+                        </button>
+                        <button
+                            onclick="clearAppointmentFilter()"
+                            class="btn btn-outline"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                    <button
+                        onclick="loadAppointments()"
+                        class="btn btn-primary"
+                    >
+                        🔄 Refresh
+                    </button>
+                </div>
 
-<!-- =================== ACCESS CONTROL =================== -->
-<script>
-  // Security: Restrict access to staff users only
-  const role = localStorage.getItem("userRole");
-  if (!role || role !== "staff") {
-    alert("Unauthorized access. Staff only.");
-    window.location.replace("login.html");
-  }
-</script>
+                <!-- Appointments Table -->
+                <div class="dashboard-container">
+                    <div class="table-responsive">
+                        <table
+                            id="appointmentsTable"
+                            class="appointments-table"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Service</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Appointments data loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        id="loadingAppointments"
+                        class="loading"
+                        style="display: none"
+                    >
+                        Loading appointments...
+                    </div>
+                    <div
+                        id="emptyAppointments"
+                        class="empty-state"
+                        style="display: none"
+                    >
+                        <p>No appointments found</p>
+                    </div>
+                </div>
+            </div>
 
-<!-- =================== NAVBAR =================== -->
-<nav class="navbar">
-  <div class="nav-container">
-    <div class="nav-logo">
-      <h2>🎓 QueueLess Campus</h2>
-    </div>
-    <ul class="nav-menu">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="appointment.html">Book Appointment</a></li>
-      <li><a href="staff.html" class="active">Staff Dashboard</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
-    </ul>
-  </div>
-</nav>
+            <!-- ==================== QUEUE SECTION ==================== -->
+            <div id="queueSection" class="tab-content">
+                <!-- Queue Statistics -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalWaiting">0</div>
+                            <div class="stat-label">People Waiting</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalInProgress">0</div>
+                            <div class="stat-label">In Progress</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalCompleted">0</div>
+                            <div class="stat-label">Completed Today</div>
+                        </div>
+                    </div>
+                </div>
 
-<!-- =================== MAIN CONTENT =================== -->
-<div class="container">
-  <div class="page-header">
-    <h1>Staff Dashboard</h1>
-    <p>Secure management of student appointments</p>
-  </div>
+                <!-- Queue Controls -->
+                <div class="dashboard-controls">
+                    <div class="filter-group">
+                        <label for="filterService">Filter by Service:</label>
+                        <select id="filterService" class="filter-input">
+                            <option value="">All Services</option>
+                            <option value="Student Services">
+                                Student Services
+                            </option>
+                            <option value="IT Support">IT Support</option>
+                            <option value="Library Services">
+                                Library Services
+                            </option>
+                            <option value="Financial Aid">Financial Aid</option>
+                            <option value="Academic Advising">
+                                Academic Advising
+                            </option>
+                            <option value="Career Counseling">
+                                Career Counseling
+                            </option>
+                        </select>
+                        <button
+                            onclick="filterQueue()"
+                            class="btn btn-secondary"
+                        >
+                            Filter
+                        </button>
+                        <button
+                            onclick="clearQueueFilter()"
+                            class="btn btn-outline"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                    <button onclick="loadQueue()" class="btn btn-primary">
+                        🔄 Refresh
+                    </button>
+                </div>
 
-  <div class="dashboard-controls">
-    <div class="filter-group">
-      <label for="filterDate">Filter by Date:</label>
-      <input type="date" id="filterDate" class="filter-input" />
-      <button onclick="filterByDate()" class="btn btn-secondary">Filter</button>
-      <button onclick="clearFilter()" class="btn btn-outline">Clear</button>
-    </div>
-    <button onclick="loadAppointments()" class="btn btn-primary">🔄 Refresh</button>
-  </div>
+                <!-- Queue Table -->
+                <div class="dashboard-container">
+                    <div class="table-responsive">
+                        <table id="queueTable" class="appointments-table">
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Student Name</th>
+                                    <th>Service</th>
+                                    <th>Contact</th>
+                                    <th>Wait Time</th>
+                                    <th>Joined At</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Queue data loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        id="loadingQueue"
+                        class="loading"
+                        style="display: none"
+                    >
+                        Loading queue...
+                    </div>
+                    <div
+                        id="emptyQueue"
+                        class="empty-state"
+                        style="display: none"
+                    >
+                        <p>No entries in queue</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <div class="dashboard-container">
-    <div class="table-responsive">
-      <table id="appointmentsTable" class="appointments-table">
-        <thead>
-          <tr>
-            <th>Student Name</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Securely populated via staff.js -->
-        </tbody>
-      </table>
-    </div>
+        <!-- ==================== APPOINTMENT UPDATE MODAL ==================== -->
+        <div id="appointmentModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Update Appointment</h2>
+                    <span class="close" onclick="closeAppointmentModal()"
+                        >&times;</span
+                    >
+                </div>
+                <form id="updateAppointmentForm" class="modal-form">
+                    <input type="hidden" id="appointmentUpdateId" />
 
-    <div id="loading" class="loading" style="display:none;">Loading appointments...</div>
-    <div id="emptyState" class="empty-state" style="display:none;">No appointments found</div>
-  </div>
-</div>
+                    <div class="form-group">
+                        <label for="appointmentUpdateStatus">Status *</label>
+                        <select id="appointmentUpdateStatus" required>
+                            <option value="Booked">Booked</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="No-Show">No-Show</option>
+                        </select>
+                    </div>
 
-<!-- =================== UPDATE MODAL =================== -->
-<div id="updateModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Update Appointment</h2>
-      <span class="close" onclick="closeModal()">&times;</span>
-    </div>
+                    <div class="form-group">
+                        <label for="appointmentUpdateDate">Date *</label>
+                        <input
+                            type="date"
+                            id="appointmentUpdateDate"
+                            required
+                        />
+                    </div>
 
-    <form id="updateForm" class="modal-form">
-      <input type="hidden" id="updateId" />
-      <!-- CSRF Awareness -->
-      <input type="hidden" id="csrfToken" value="secure-token-placeholder" />
+                    <div class="form-group">
+                        <label for="appointmentUpdateTime">Time *</label>
+                        <input
+                            type="time"
+                            id="appointmentUpdateTime"
+                            required
+                        />
+                    </div>
 
-      <div class="form-group">
-        <label for="updateStatus">Status *</label>
-        <select id="updateStatus" required>
-          <option value="Booked">Booked</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Completed">Completed</option>
-          <option value="Cancelled">Cancelled</option>
-          <option value="No-Show">No-Show</option>
-        </select>
-      </div>
+                    <div class="form-group">
+                        <label for="appointmentUpdateNotes">Notes</label>
+                        <textarea
+                            id="appointmentUpdateNotes"
+                            rows="3"
+                            placeholder="Additional notes..."
+                        ></textarea>
+                    </div>
 
-      <div class="form-group">
-        <label for="updateDate">Date *</label>
-        <input type="date" id="updateDate" required />
-      </div>
+                    <div id="appointmentUpdateMessage" class="message"></div>
 
-      <div class="form-group">
-        <label for="updateTime">Time *</label>
-        <input type="time" id="updateTime" required />
-      </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-outline"
+                            onclick="closeAppointmentModal()"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-      <div id="updateMessage" class="message"></div>
+        <!-- ==================== QUEUE UPDATE MODAL ==================== -->
+        <div id="queueModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Update Queue Status</h2>
+                    <span class="close" onclick="closeQueueModal()"
+                        >&times;</span
+                    >
+                </div>
+                <form id="updateQueueForm" class="modal-form">
+                    <input type="hidden" id="queueUpdateId" />
 
-      <div class="modal-actions">
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
+                    <div class="queue-info-display">
+                        <div class="info-row">
+                            <span class="info-label">Student:</span>
+                            <span id="modalStudentName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Service:</span>
+                            <span id="modalService">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Position:</span>
+                            <span id="modalPosition">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Contact:</span>
+                            <span id="modalContact">-</span>
+                        </div>
+                    </div>
 
-<!-- =================== FOOTER =================== -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-section">
-      <h4>Contact Us</h4>
-      <p>📧 support@queueless.edu.au</p>
-      <p>📞 (+61) 3 9918 9188</p>
-      <p>📍 Deakin University</p>
-    </div>
-    <div class="footer-section">
-      <h4>Quick Links</h4>
-      <p><a href="index.html">Home</a></p>
-      <p><a href="appointment.html">Book Appointment</a></p>
-      <p><a href="staff.html">Staff Dashboard</a></p>
-    </div>
-    <div class="footer-section">
-      <h4>About</h4>
-      <p>&copy; 2025 QueueLess Campus</p>
-      <p>SIT725 Group Project</p>
-    </div>
-  </div>
-</footer>
+                    <div class="form-group">
+                        <label for="queueUpdateStatus">Update Status *</label>
+                        <select id="queueUpdateStatus" required>
+                            <option value="Waiting">Waiting</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
 
-<!-- =================== SCRIPT =================== -->
-<script defer src="staff.js"></script>
+                    <div id="queueUpdateMessage" class="message"></div>
 
-<script>
-  // Security: Session termination
-  function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
-  }
-</script>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-outline"
+                            onclick="closeQueueModal()"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-</body>
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 QueueLess Campus. All rights reserved.</p>
+        </footer>
+
+        <script src="staff.js"></script>
+    </body>
 </html>
