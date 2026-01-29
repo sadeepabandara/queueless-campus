@@ -6,9 +6,10 @@ const AppointmentSchema = new mongoose.Schema(
         serviceType: { type: String, required: true },
         appointmentDate: { type: String, required: true },
         appointmentTime: { type: String, required: true },
+        notes: { type: String, required: false, default: '' },
         status: { type: String, default: 'Booked' },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 module.exports = mongoose.model('Appointment', AppointmentSchema);

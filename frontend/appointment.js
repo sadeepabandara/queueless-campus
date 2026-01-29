@@ -25,6 +25,7 @@ form.addEventListener('submit', async (e) => {
         serviceType: document.getElementById('serviceType').value,
         appointmentDate: document.getElementById('appointmentDate').value,
         appointmentTime: document.getElementById('appointmentTime').value,
+        notes: document.getElementById('notes').value.trim(),
         status: 'Booked',
     };
 
@@ -44,7 +45,7 @@ form.addEventListener('submit', async (e) => {
                     formatDate(data.appointmentDate) +
                     ' at ' +
                     formatTime(data.appointmentTime),
-                'success'
+                'success',
             );
             form.reset();
 
@@ -55,14 +56,14 @@ form.addEventListener('submit', async (e) => {
             showMessage(
                 '✗ Failed to book appointment: ' +
                     (error.error || 'Unknown error'),
-                'error'
+                'error',
             );
         }
     } catch (error) {
         console.error('Error:', error);
         showMessage(
             '✗ Error connecting to server. Please try again later.',
-            'error'
+            'error',
         );
     } finally {
         submitBtn.textContent = originalText;
