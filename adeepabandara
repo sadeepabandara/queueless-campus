@@ -1,0 +1,57 @@
+* [33m99fdd21[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mregisteration-security-feature[m[33m, [m[1;31morigin/feature-frontend-ui[m[33m, [m[1;32mfeature/staff-dashboard-frontend[m[33m, [m[1;32mfeature-frontend-ui[m[33m)[m Added Security features on index.html page
+*   [33m7ea6658[m Merge branch 'main' of https://github.com/sadeepabandara/queueless-campus into feature/staff-dashboard-frontend
+[32m|[m[33m\[m  
+[32m|[m *   [33m51cdf58[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #11 from sadeepabandara/feature/frontend-appointment
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m *   [33m5bce483[m Merge pull request #10 from sadeepabandara/main
+[32m|[m [34m|[m [36m|[m[34m\[m  
+[32m|[m [34m|[m [36m|[m[34m/[m  
+[32m|[m [34m|[m[34m/[m[36m|[m   
+[32m|[m * [36m|[m   [33mc55610f[m Created Sign uP ui layout
+[32m|[m [1;32m|[m[1;33m\[m [36m\[m  
+[32m|[m [1;32m|[m * [36m\[m   [33md2b3adf[m Merge pull request #8 from sadeepabandara/main
+[32m|[m [1;32m|[m [1;34m|[m[1;32m\[m [36m\[m  
+[32m|[m [1;32m|[m [1;34m|[m[1;32m/[m [36m/[m  
+[32m|[m [1;32m|[m[1;32m/[m[1;34m|[m [36m|[m   
+* [1;32m|[m [1;34m|[m [36m|[m [33m8cdaf75[m Added secure signup page with validation and XSS protection
+* [1;32m|[m [1;34m|[m [36m|[m [33m7684e1f[m Created signup page UI layout
+[1;36m|[m[1;32m\[m[1;32m|[m [1;34m|[m [36m|[m 
+[1;36m|[m * [1;34m|[m [36m|[m [33m2815cdf[m Add README file to the frontend
+[1;36m|[m * [1;34m|[m [36m|[m   [33m6344ec8[m Merge pull request #7 from sadeepabandara/feature/update-ui
+[1;36m|[m [32m|[m[33m\[m [1;34m\[m [36m\[m  
+[1;36m|[m [32m|[m * [1;34m|[m [36m|[m [33ma5473f5[m Update font and footer details in UI
+[1;36m|[m [32m|[m[32m/[m [1;34m/[m [36m/[m  
+[1;36m|[m * [1;34m|[m [36m|[m   [33mfd278b3[m Merge pull request #6 from sadeepabandara/feature/add-footer-information
+[1;36m|[m [34m|[m[35m\[m [1;34m\[m [36m\[m  
+[1;36m|[m [34m|[m * [1;34m|[m [36m|[m [33mb9ab6ad[m Add contact information and quick links to footer
+[1;36m|[m [34m|[m[34m/[m [1;34m/[m [36m/[m  
+[1;36m|[m * [1;34m|[m [36m|[m   [33m0be9315[m Merge pull request #5 from sadeepabandara/feature/add-project-documentation
+[1;36m|[m [36m|[m[1;31m\[m [1;34m\[m [36m\[m  
+[1;36m|[m [36m|[m * [1;34m|[m [36m|[m [33m3a67821[m Add comprehensive README with project documentation
+[1;36m|[m [36m|[m[36m/[m [1;34m/[m [36m/[m  
+[1;36m|[m * [1;34m|[m [36m|[m [33m08dd211[m Merge pull request #4 from sadeepabandara/feature/staff-dashboard-frontend
+[1;36m|[m [1;32m|[m[1;34m\[m[1;34m|[m [36m|[m 
+* [1;32m|[m [1;34m|[m [36m|[m [33m6dd27e5[m Resolved merge conflicts
+* [1;32m|[m [1;34m|[m [36m|[m [33mcd9fd3a[m Created signup page UI layout
+[1;34m|[m [1;32m|[m[1;34m/[m [36m/[m  
+[1;34m|[m[1;34m/[m[1;32m|[m [36m|[m   
+* [1;32m|[m [36m|[m [33maaa0be6[m[33m ([m[1;31morigin/feature/staff-dashboard-frontend[m[33m)[m Implement staff dashboard
+[1;32m|[m[1;32m/[m [36m/[m  
+* [36m|[m   [33mba36bf1[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #3 from sadeepabandara/feature/sprint1-complete-mvc
+[1;34m|[m[1;35m\[m [36m\[m  
+[1;34m|[m * [36m|[m [33m1d62936[m[33m ([m[1;31morigin/feature/sprint1-complete-mvc[m[33m)[m Add controllers folder to separte the business logic
+[1;34m|[m * [36m|[m [33m0612551[m Update routes folder
+[1;34m|[m * [36m|[m [33m89fe9d4[m Complete Sprint 1: Add homepage, update full UI and navigation system
+[1;34m|[m[1;34m/[m [36m/[m  
+* [36m|[m   [33m9fb35a7[m Merge pull request #2 from sadeepabandara/feature/staff-dashboard
+[1;36m|[m[31m\[m [36m\[m  
+[1;36m|[m * [36m|[m [33mf6b5e18[m[33m ([m[1;31morigin/feature/staff-dashboard[m[33m)[m Add staff dashboard layout
+[1;36m|[m[1;36m/[m [36m/[m  
+* [36m|[m [33m29b850f[m Merge pull request #1 from sadeepabandara/feature/frontend-appointment
+[32m|[m[36m\[m[36m|[m 
+[32m|[m * [33m13550a6[m[33m ([m[1;31morigin/feature/frontend-appointment[m[33m)[m Add appointment booking frontend and connect to backend API
+[32m|[m * [33m617709f[m Add appointment booking frontend
+[32m|[m[32m/[m  
+* [33m729c0ee[m Add backend appointment API with MongoDB Atlas
+* [33m5072b33[m Initial project setup with frontend and backend folders
+* [33mf6e1f96[m Initial commit
