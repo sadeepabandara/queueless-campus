@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Staff Dashboard - QueueLess Campus</title>
         <link rel="stylesheet" href="style.css" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
     </head>
-
     <body>
         <!-- Navigation Bar -->
         <nav class="navbar">
@@ -29,65 +29,219 @@
         <div class="container">
             <div class="page-header">
                 <h1>Staff Dashboard</h1>
-                <p>Manage student appointments</p>
+                <p>Manage appointments and queues</p>
             </div>
 
-            <div class="dashboard-controls">
-                <div class="filter-group">
-                    <label for="filterDate">Filter by Date:</label>
-                    <input type="date" id="filterDate" class="filter-input" />
-                    <button onclick="filterByDate()" class="btn btn-secondary">
-                        Filter
-                    </button>
-                    <button onclick="clearFilter()" class="btn btn-outline">
-                        Clear
-                    </button>
-                </div>
-                <button onclick="loadAppointments()" class="btn btn-primary">
-                    🔄 Refresh
+            <!-- Tab Navigation -->
+            <div class="dashboard-tabs">
+                <button
+                    class="tab-button active"
+                    onclick="switchTab('appointments')"
+                    id="appointmentsTab"
+                >
+                    📅 Appointments
+                </button>
+                <button
+                    class="tab-button"
+                    onclick="switchTab('queue')"
+                    id="queueTab"
+                >
+                    👥 Virtual Queue
                 </button>
             </div>
 
-            <div class="dashboard-container">
-                <div class="table-responsive">
-                    <table id="appointmentsTable" class="appointments-table">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Service</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data will be loaded here -->
-                        </tbody>
-                    </table>
+            <!-- ==================== APPOINTMENTS SECTION ==================== -->
+            <div id="appointmentsSection" class="tab-content active">
+                <!-- Appointments Controls -->
+                <div class="dashboard-controls">
+                    <div class="filter-group">
+                        <label for="filterDate">Filter by Date:</label>
+                        <input
+                            type="date"
+                            id="filterDate"
+                            class="filter-input"
+                        />
+                        <button
+                            onclick="filterAppointmentsByDate()"
+                            class="btn btn-secondary"
+                        >
+                            Filter
+                        </button>
+                        <button
+                            onclick="clearAppointmentFilter()"
+                            class="btn btn-outline"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                    <button
+                        onclick="loadAppointments()"
+                        class="btn btn-primary"
+                    >
+                        🔄 Refresh
+                    </button>
                 </div>
-                <div id="loading" class="loading" style="display: none">
-                    Loading appointments...
+
+                <!-- Appointments Table -->
+                <div class="dashboard-container">
+                    <div class="table-responsive">
+                        <table
+                            id="appointmentsTable"
+                            class="appointments-table"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Service</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Appointments data loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        id="loadingAppointments"
+                        class="loading"
+                        style="display: none"
+                    >
+                        Loading appointments...
+                    </div>
+                    <div
+                        id="emptyAppointments"
+                        class="empty-state"
+                        style="display: none"
+                    >
+                        <p>No appointments found</p>
+                    </div>
                 </div>
-                <div id="emptyState" class="empty-state" style="display: none">
-                    <p>No appointments found</p>
+            </div>
+
+            <!-- ==================== QUEUE SECTION ==================== -->
+            <div id="queueSection" class="tab-content">
+                <!-- Queue Statistics -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalWaiting">0</div>
+                            <div class="stat-label">People Waiting</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalInProgress">0</div>
+                            <div class="stat-label">In Progress</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalCompleted">0</div>
+                            <div class="stat-label">Completed Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Queue Controls -->
+                <div class="dashboard-controls">
+                    <div class="filter-group">
+                        <label for="filterService">Filter by Service:</label>
+                        <select id="filterService" class="filter-input">
+                            <option value="">All Services</option>
+                            <option value="Student Services">
+                                Student Services
+                            </option>
+                            <option value="IT Support">IT Support</option>
+                            <option value="Library Services">
+                                Library Services
+                            </option>
+                            <option value="Financial Aid">Financial Aid</option>
+                            <option value="Academic Advising">
+                                Academic Advising
+                            </option>
+                            <option value="Career Counseling">
+                                Career Counseling
+                            </option>
+                        </select>
+                        <button
+                            onclick="filterQueue()"
+                            class="btn btn-secondary"
+                        >
+                            Filter
+                        </button>
+                        <button
+                            onclick="clearQueueFilter()"
+                            class="btn btn-outline"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                    <button onclick="loadQueue()" class="btn btn-primary">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <!-- Queue Table -->
+                <div class="dashboard-container">
+                    <div class="table-responsive">
+                        <table id="queueTable" class="appointments-table">
+                            <thead>
+                                <tr>
+                                    <th>Position</th>
+                                    <th>Student Name</th>
+                                    <th>Service</th>
+                                    <th>Contact</th>
+                                    <th>Wait Time</th>
+                                    <th>Joined At</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Queue data loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        id="loadingQueue"
+                        class="loading"
+                        style="display: none"
+                    >
+                        Loading queue...
+                    </div>
+                    <div
+                        id="emptyQueue"
+                        class="empty-state"
+                        style="display: none"
+                    >
+                        <p>No entries in queue</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Update Modal -->
-        <div id="updateModal" class="modal">
+        <!-- ==================== APPOINTMENT UPDATE MODAL ==================== -->
+        <div id="appointmentModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Update Appointment</h2>
-                    <span class="close" onclick="closeModal()">&times;</span>
+                    <span class="close" onclick="closeAppointmentModal()"
+                        >&times;</span
+                    >
                 </div>
-                <form id="updateForm" class="modal-form">
-                    <input type="hidden" id="updateId" />
+                <form id="updateAppointmentForm" class="modal-form">
+                    <input type="hidden" id="appointmentUpdateId" />
 
                     <div class="form-group">
-                        <label for="updateStatus">Status *</label>
-                        <select id="updateStatus" required>
+                        <label for="appointmentUpdateStatus">Status *</label>
+                        <select id="appointmentUpdateStatus" required>
                             <option value="Booked">Booked</option>
                             <option value="Confirmed">Confirmed</option>
                             <option value="Completed">Completed</option>
@@ -97,16 +251,33 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="updateDate">Date *</label>
-                        <input type="date" id="updateDate" required />
+                        <label for="appointmentUpdateDate">Date *</label>
+                        <input
+                            type="date"
+                            id="appointmentUpdateDate"
+                            required
+                        />
                     </div>
 
                     <div class="form-group">
-                        <label for="updateTime">Time *</label>
-                        <input type="time" id="updateTime" required />
+                        <label for="appointmentUpdateTime">Time *</label>
+                        <input
+                            type="time"
+                            id="appointmentUpdateTime"
+                            required
+                        />
                     </div>
 
-                    <div id="updateMessage" class="message"></div>
+                    <div class="form-group">
+                        <label for="appointmentUpdateNotes">Notes</label>
+                        <textarea
+                            id="appointmentUpdateNotes"
+                            rows="3"
+                            placeholder="Additional notes..."
+                        ></textarea>
+                    </div>
+
+                    <div id="appointmentUpdateMessage" class="message"></div>
 
                     <div class="modal-actions">
                         <button type="submit" class="btn btn-primary">
@@ -115,7 +286,66 @@
                         <button
                             type="button"
                             class="btn btn-outline"
-                            onclick="closeModal()"
+                            onclick="closeAppointmentModal()"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== QUEUE UPDATE MODAL ==================== -->
+        <div id="queueModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Update Queue Status</h2>
+                    <span class="close" onclick="closeQueueModal()"
+                        >&times;</span
+                    >
+                </div>
+                <form id="updateQueueForm" class="modal-form">
+                    <input type="hidden" id="queueUpdateId" />
+
+                    <div class="queue-info-display">
+                        <div class="info-row">
+                            <span class="info-label">Student:</span>
+                            <span id="modalStudentName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Service:</span>
+                            <span id="modalService">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Position:</span>
+                            <span id="modalPosition">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Contact:</span>
+                            <span id="modalContact">-</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="queueUpdateStatus">Update Status *</label>
+                        <select id="queueUpdateStatus" required>
+                            <option value="Waiting">Waiting</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div id="queueUpdateMessage" class="message"></div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-outline"
+                            onclick="closeQueueModal()"
                         >
                             Cancel
                         </button>
@@ -126,26 +356,9 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <p>📧 Email: support@queueless.edu.au</p>
-                    <p>📞 Phone: (+61) 3 9918 9188</p>
-                    <p>📍 Location: Deakin University</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <p><a href="index.html">Home</a></p>
-                    <p><a href="appointment.html">Book Appointment</a></p>
-                    <p><a href="staff.html">Staff Dashboard</a></p>
-                </div>
-                <div class="footer-section">
-                    <h4>About</h4>
-                    <p>&copy; 2025 QueueLess Campus. All rights reserved.</p>
-                    <p>Developed for SIT725 Group Project</p>
-                </div>
-            </div>
+            <p>&copy; 2025 QueueLess Campus. All rights reserved.</p>
         </footer>
+
         <script src="staff.js"></script>
     </body>
 </html>
