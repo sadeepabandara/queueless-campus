@@ -17,8 +17,14 @@ mongoose
     .catch((err) => console.error('MongoDB connection error:', err));
 
 // Routes
+
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
 const appointmentRoutes = require('./routes/appointments');
 app.use('/api/appointments', appointmentRoutes);
+
+
 
 // Test route
 app.get('/', (req, res) => {
@@ -26,5 +32,5 @@ app.get('/', (req, res) => {
 });
 
 // Server start
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
