@@ -2,97 +2,221 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sign Up - QueueLess Campus</title>
+  <title>Sign Up | QueueLess Campus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ================= SECURITY HEADERS ================= -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="form-container">
-  <h2>Sign Up</h2>
-  <form class="appointment-form">
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" placeholder="Enter email" required>
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" aria-label="Main Navigation">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <h2>🎓 QueueLess Campus</h2>
     </div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="appointment.html" id="bookLink">Book Appointment</a></li>
+      <li><a href="login.html" id="staffLink">Staff Login</a></li>
+      <li><a href="signup.html" id="signupLink" class="active">Sign Up</a></li>
+      <li><a href="login.html" id="loginLink">Login</a></li>
+    </ul>
+  </div>
+</nav>
 
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" placeholder="Create password" oninput="checkStrength()" required>
-      <div id="strengthText" class="strength"></div>
+<!-- ===================== SIGNUP FORM ===================== -->
+<section class="container">
+  <div class="page-header">
+    <h1>Create Your Account</h1>
+    <p>Join QueueLess Campus to book appointments and manage your schedule efficiently.</p>
+  </div>
+
+  <div class="form-container">
+    <form id="signupForm" class="appointment-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Create a strong password">
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" name="role" required>
+          <option value="">Select your role</option>
+          <option value="student">Student</option>
+          <option value="staff">Staff</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-large">Sign Up</button>
+    </form>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <p style="text-align: center; margin-top: 2rem;">
+    Already have an account? <a href="login.html">Login here</a>
+  </p>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Contact Us</h4>
+      <p>📧 support@queueless.edu.au</p>
+      <p>📞 (+61) 3 9918 9188</p>
+      <p>📍 Deakin University</p>
     </div>
-
-    <div class="form-group">
-      <label for="role">Role:</label>
-      <select id="role" required>
-        <option value="">--Select Role--</option>
-        <option value="student">Student</option>
-        <option value="staff">Staff</option>
-      </select>
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <p><a href="index.html">Home</a></p>
+      <p><a href="appointment.html">Book Appointment</a></p>
+      <p><a href="login.html">Staff Login</a></p>
     </div>
+    <div class="footer-section">
+      <h4>About</h4>
+      <p>&copy; 2025 QueueLess Campus</p>
+      <p>SIT725 Group Project</p>
+    </div>
+  </div>
+</footer>
 
-    <button type="button" class="btn btn-primary btn-large" onclick="signup()">Sign Up</button>
-
-    <div id="errorMsg" class="message error"></div>
-  </form>
-</div>
-
+<!-- ===================== JAVASCRIPT ===================== -->
 <script>
-  function sanitize(input) {
-    return input.replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#x27;");
+  // ==========================
+  // Security: Session Timeout
+  // ==========================
+  setTimeout(() => {
+    localStorage.clear();
+    alert("Session expired. Please login again.");
+    window.location.href = "login.html";
+  }, 20 * 60 * 1000);
+
+  // ==========================
+  // Security: Role-Based Navigation Control
+  // ==========================
+  const role = localStorage.getItem("userRole");
+
+  const bookLink = document.getElementById("bookLink");
+  const staffLink = document.getElementById("staffLink");
+  const signupLink = document.getElementById("signupLink");
+  const loginLink = document.getElementById("loginLink");
+  const navMenu = document.getElementById("navMenu");
+
+  if (role) {
+    signupLink.style.display = "none";
+    loginLink.style.display = "none";
+
+    const logout = document.createElement("a");
+    logout.textContent = "Logout";
+    logout.href = "#";
+    logout.onclick = () => {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace("login.html");
+    };
+    navMenu.appendChild(logout);
   }
 
-  function checkStrength() {
-    const pwd = document.getElementById("password").value;
-    const strengthText = document.getElementById("strengthText");
-
-    if (pwd.length < 6) {
-      strengthText.textContent = "Weak password";
-      strengthText.style.color = "red";
-    } else if (/[A-Z]/.test(pwd) && /[0-9]/.test(pwd)) {
-      strengthText.textContent = "Strong password";
-      strengthText.style.color = "green";
-    } else {
-      strengthText.textContent = "Medium password";
-      strengthText.style.color = "orange";
+  // ==========================
+  // Security: Prevent Unauthorized Access
+  // ==========================
+  staffLink.addEventListener("click", function (e) {
+    if (role !== "staff") {
+      e.preventDefault();
+      alert("Staff only area. Please login as staff.");
+      window.location.href = "login.html";
     }
-  }
+  });
 
-  function signup() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-    let role = document.getElementById("role").value;
-    const errorMsg = document.getElementById("errorMsg");
+  bookLink.addEventListener("click", function (e) {
+    if (role !== "student") {
+      e.preventDefault();
+      alert("Students only. Please login as student.");
+      window.location.href = "login.html";
+    }
+  });
 
-    errorMsg.textContent = "";
+  // ==========================
+  // Signup Form Handling
+  // ==========================
+  const signupForm = document.getElementById('signupForm');
+  const messageDiv = document.getElementById('message');
 
-    email = sanitize(email);
-    password = sanitize(password);
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const role = document.getElementById('role').value;
 
-    if (!emailPattern.test(email)) {
-      errorMsg.textContent = "Invalid email format.";
+    // Client-side validation
+    if (!email || !password || !confirmPassword || !role) {
+      showMessage('Please fill in all fields.', 'error');
       return;
     }
 
-    if (!email || !password || !role) {
-      errorMsg.textContent = "All fields are required.";
+    if (password !== confirmPassword) {
+      showMessage('Passwords do not match.', 'error');
       return;
     }
 
     if (password.length < 6) {
-      errorMsg.textContent = "Password must be at least 6 characters.";
+      showMessage('Password must be at least 6 characters long.', 'error');
       return;
     }
 
-    const user = { email, password, role };
-    localStorage.setItem("user", JSON.stringify(user));
+    // Send signup request
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, role }),
+      });
 
-    alert("Account created securely!");
-    window.location.href = "login.html";
+      const data = await response.json();
+
+      if (response.ok) {
+        showMessage('Account created successfully! Redirecting to login...', 'success');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+      } else {
+        showMessage(data.message || 'Signup failed. Please try again.', 'error');
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      showMessage('Network error. Please check your connection and try again.', 'error');
+    }
+  });
+
+  function showMessage(text, type) {
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
   }
 </script>
 
