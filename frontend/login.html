@@ -2,78 +2,207 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login - QueueLess Campus</title>
+  <title>Login | QueueLess Campus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ================= SECURITY HEADERS ================= -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="login-box">
-  <h2>Login</h2>
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" aria-label="Main Navigation">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <h2>🎓 QueueLess Campus</h2>
+    </div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="appointment.html" id="bookLink">Book Appointment</a></li>
+      <li><a href="login.html" id="staffLink">Staff Login</a></li>
+      <li><a href="signup.html" id="signupLink">Sign Up</a></li>
+      <li><a href="login.html" id="loginLink" class="active">Login</a></li>
+    </ul>
+  </div>
+</nav>
 
-  <label>Email:</label>
-  <input type="email" id="loginEmail" placeholder="Enter email">
+<!-- ===================== LOGIN FORM ===================== -->
+<section class="container">
+  <div class="page-header">
+    <h1>Login to Your Account</h1>
+    <p>Access your QueueLess Campus dashboard to manage appointments and schedules.</p>
+  </div>
 
-  <label>Password:</label>
-  <input type="password" id="loginPassword" placeholder="Enter password">
+  <div class="form-container">
+    <form id="loginForm" class="appointment-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email">
+      </div>
 
-  <button id="loginBtn" onclick="login()">Login</button>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password">
+      </div>
 
-  <p id="loginError" style="color:red;"></p>
-</div>
+      <button type="submit" class="btn btn-primary btn-large">Login</button>
+    </form>
 
+    <div id="message" class="message"></div>
+  </div>
+
+  <p style="text-align: center; margin-top: 2rem;">
+    Don't have an account? <a href="signup.html">Sign up here</a>
+  </p>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Contact Us</h4>
+      <p>📧 support@queueless.edu.au</p>
+      <p>📞 (+61) 3 9918 9188</p>
+      <p>📍 Deakin University</p>
+    </div>
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <p><a href="index.html">Home</a></p>
+      <p><a href="appointment.html">Book Appointment</a></p>
+      <p><a href="login.html">Staff Login</a></p>
+    </div>
+    <div class="footer-section">
+      <h4>About</h4>
+      <p>&copy; 2025 QueueLess Campus</p>
+      <p>SIT725 Group Project</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== JAVASCRIPT ===================== -->
 <script>
-  let attempts = 0;
+  // ==========================
+  // Security: Session Timeout
+  // ==========================
+  setTimeout(() => {
+    localStorage.clear();
+    alert("Session expired. Please login again.");
+    window.location.href = "login.html";
+  }, 20 * 60 * 1000);
 
-  // XSS Protection
-  function sanitize(input) {
-    return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // ==========================
+  // Security: Role-Based Navigation Control
+  // ==========================
+  const role = localStorage.getItem("userRole");
+
+  const bookLink = document.getElementById("bookLink");
+  const staffLink = document.getElementById("staffLink");
+  const signupLink = document.getElementById("signupLink");
+  const loginLink = document.getElementById("loginLink");
+  const navMenu = document.getElementById("navMenu");
+
+  if (role) {
+    signupLink.style.display = "none";
+    loginLink.style.display = "none";
+
+    const logout = document.createElement("a");
+    logout.textContent = "Logout";
+    logout.href = "#";
+    logout.onclick = () => {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace("login.html");
+    };
+    navMenu.appendChild(logout);
   }
 
-  function login() {
-    const email = sanitize(document.getElementById("loginEmail").value);
-    const password = sanitize(document.getElementById("loginPassword").value);
-    const error = document.getElementById("loginError");
-    const button = document.getElementById("loginBtn");
+  // ==========================
+  // Security: Prevent Unauthorized Access
+  // ==========================
+  staffLink.addEventListener("click", function (e) {
+    if (role !== "staff") {
+      e.preventDefault();
+      alert("Staff only area. Please login as staff.");
+      window.location.href = "login.html";
+    }
+  });
 
-    error.textContent = "";
+  bookLink.addEventListener("click", function (e) {
+    if (role !== "student") {
+      e.preventDefault();
+      alert("Students only. Please login as student.");
+      window.location.href = "login.html";
+    }
+  });
 
-    const user = JSON.parse(localStorage.getItem("user"));
+  // ==========================
+  // Login Form Handling
+  // ==========================
+  const loginForm = document.getElementById('loginForm');
+  const messageDiv = document.getElementById('message');
 
-    // Authentication check
-    if (!user || user.email !== email || user.password !== password) {
-      attempts++;
-      error.textContent = "Invalid login credentials";
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      // Brute-force protection
-      if (attempts >= 3) {
-        error.textContent = "Too many attempts. Try again in 30 seconds.";
-        button.disabled = true;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
 
-        setTimeout(() => {
-          attempts = 0;
-          button.disabled = false;
-          error.textContent = "";
-        }, 30000);
-      }
+    // Client-side validation
+    if (!email || !password) {
+      showMessage('Please fill in all fields.', 'error');
       return;
     }
 
-    // Reset attempts after success
-    attempts = 0;
+    // Send login request
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // Save role for access control
-    localStorage.setItem("userRole", user.role);
+      const data = await response.json();
 
-    // Simulate session timeout (5 minutes)
-    setTimeout(() => {
-      localStorage.clear();
-      alert("Session expired. Please login again.");
-      window.location.href = "login.html";
-    }, 300000);
+      if (response.ok) {
+        // Store token and role
+        localStorage.setItem('token', data.token);
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        localStorage.setItem('userRole', payload.role);
 
-    // Redirect to main index page after login
-    window.location.href = "index.html";
+        showMessage('Login successful! Redirecting...', 'success');
+        setTimeout(() => {
+          // Redirect based on role
+          if (payload.role === 'staff') {
+            window.location.href = 'staff.html';
+          } else {
+            window.location.href = 'appointment.html';
+          }
+        }, 2000);
+      } else {
+        showMessage(data.message || 'Login failed. Please try again.', 'error');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showMessage('Network error. Please check your connection and try again.', 'error');
+    }
+  });
+
+  function showMessage(text, type) {
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
   }
 </script>
+
 </body>
 </html>
