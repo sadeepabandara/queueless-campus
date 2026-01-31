@@ -2,11 +2,13 @@ const API_URL = 'http://localhost:8080/api/queue';
 
 let currentQueueId = null;
 let waitTimeInterval = null;
+let queueListInterval = null;
 
 // Load current queues on page load
 window.onload = () => {
     loadCurrentQueues();
     checkExistingQueue();
+    startQueueListAutoRefresh(); // NEW: Auto-refresh current queue list
 };
 
 // Check if user already in queue (stored in localStorage)
@@ -108,6 +110,17 @@ async function loadQueueStatus(queueId) {
 
         if (response.ok) {
             const queueEntry = await response.json();
+
+            // NEW: Check if status is Completed or Cancelled
+            if (
+                queueEntry.status === 'Completed' ||
+                queueEntry.status === 'Cancelled'
+            ) {
+                // Clear localStorage and reset to join form
+                handleQueueCompletion();
+                return;
+            }
+
             displayQueueStatus(queueEntry);
 
             // Show status section, hide form
@@ -127,19 +140,54 @@ async function loadQueueStatus(queueId) {
     }
 }
 
+// NEW: Handle when queue is completed
+function handleQueueCompletion() {
+    // Clear localStorage
+    localStorage.removeItem('queueId');
+    currentQueueId = null;
+
+    // Stop all intervals
+    if (waitTimeInterval) {
+        clearInterval(waitTimeInterval);
+        waitTimeInterval = null;
+    }
+
+    // Show join form, hide status
+    document.getElementById('joinQueueSection').style.display = 'block';
+    document.getElementById('queueStatusSection').style.display = 'none';
+
+    // Reset form
+    form.reset();
+
+    // Show message
+    showMessage('✓ Your queue session has been completed!', 'success');
+
+    // Refresh queue list
+    loadCurrentQueues();
+}
+
 // Refresh wait time
 async function refreshWaitTime() {
     if (!currentQueueId) return;
 
     const refreshBtn = document.getElementById('refreshBtn');
-    refreshBtn.textContent = 'Refreshing...';
-    refreshBtn.disabled = true;
+    if (refreshBtn) {
+        refreshBtn.textContent = 'Refreshing...';
+        refreshBtn.disabled = true;
+    }
 
     try {
         const response = await fetch(`${API_URL}/${currentQueueId}/waittime`);
 
         if (response.ok) {
             const data = await response.json();
+
+            // NEW: Check if status changed to Completed or Cancelled
+            if (data.status === 'Completed' || data.status === 'Cancelled') {
+                handleQueueCompletion();
+                return;
+            }
+
             document.getElementById('queuePosition').textContent =
                 `#${data.position}`;
             document.getElementById('estimatedWait').textContent =
@@ -153,14 +201,17 @@ async function refreshWaitTime() {
 
             showMessage('✓ Wait time updated!', 'success');
         } else {
-            showMessage('✗ Could not refresh wait time', 'error');
+            // If not found, handle completion
+            handleQueueCompletion();
         }
     } catch (error) {
         console.error('Error refreshing wait time:', error);
         showMessage('✗ Error connecting to server', 'error');
     } finally {
-        refreshBtn.textContent = '🔄 Refresh Wait Time';
-        refreshBtn.disabled = false;
+        if (refreshBtn) {
+            refreshBtn.textContent = '🔄 Refresh Wait Time';
+            refreshBtn.disabled = false;
+        }
     }
 }
 
@@ -172,6 +223,17 @@ function startWaitTimeRefresh() {
 
     waitTimeInterval = setInterval(() => {
         refreshWaitTime();
+    }, 30000); // 30 seconds
+}
+
+// NEW: Auto-refresh current queue list every 30 seconds
+function startQueueListAutoRefresh() {
+    if (queueListInterval) {
+        clearInterval(queueListInterval);
+    }
+
+    queueListInterval = setInterval(() => {
+        loadCurrentQueues();
     }, 30000); // 30 seconds
 }
 
@@ -262,7 +324,7 @@ async function loadCurrentQueues(serviceType = null) {
     }
 }
 
-// Display queues in list
+// Display queues in list with UPDATED wait times
 function displayQueues(queues) {
     const queueList = document.getElementById('queueList');
     queueList.innerHTML = '';
@@ -290,11 +352,20 @@ function displayQueues(queues) {
             const queueItem = document.createElement('div');
             queueItem.className = 'queue-item';
 
+            // NEW: Calculate actual remaining wait time based on elapsed time
+            const joinedAt = new Date(queue.joinedAt);
+            const now = new Date();
+            const elapsedMinutes = Math.floor((now - joinedAt) / 60000);
+            const remainingWait = Math.max(
+                0,
+                queue.estimatedWaitTime - elapsedMinutes,
+            );
+
             queueItem.innerHTML = `
                 <div class="queue-position">#${queue.position}</div>
                 <div class="queue-details">
                     <div class="queue-name">${escapeHtml(queue.studentName)}</div>
-                    <div class="queue-wait">Wait: ${formatWaitTime(queue.estimatedWaitTime)}</div>
+                    <div class="queue-wait">Wait: ${formatWaitTime(remainingWait)}</div>
                 </div>
                 <div class="queue-status">
                     <span class="status-badge status-${queue.status.toLowerCase()}">${queue.status}</span>
