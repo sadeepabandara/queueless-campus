@@ -4,6 +4,7 @@ const QUEUE_API = 'http://localhost:8080/api/queue';
 let allAppointments = [];
 let allQueueEntries = [];
 let currentQueueFilter = '';
+let queueAutoRefreshInterval = null; // NEW: Auto-refresh interval
 
 // ==================== INITIALIZATION ====================
 
@@ -55,10 +56,35 @@ function switchTab(tabName) {
         document.getElementById('appointmentsTab').classList.add('active');
         document.getElementById('appointmentsSection').classList.add('active');
         loadAppointments();
+
+        // NEW: Stop queue auto-refresh when switching to appointments
+        stopQueueAutoRefresh();
     } else if (tabName === 'queue') {
         document.getElementById('queueTab').classList.add('active');
         document.getElementById('queueSection').classList.add('active');
         loadQueue();
+
+        // NEW: Start queue auto-refresh when switching to queue tab
+        startQueueAutoRefresh();
+    }
+}
+
+// NEW: Start auto-refresh for queue (every 30 seconds)
+function startQueueAutoRefresh() {
+    // Clear any existing interval
+    stopQueueAutoRefresh();
+
+    // Set new interval
+    queueAutoRefreshInterval = setInterval(() => {
+        loadQueue();
+    }, 30000); // 30 seconds
+}
+
+// NEW: Stop auto-refresh
+function stopQueueAutoRefresh() {
+    if (queueAutoRefreshInterval) {
+        clearInterval(queueAutoRefreshInterval);
+        queueAutoRefreshInterval = null;
     }
 }
 
@@ -334,8 +360,18 @@ function displayQueue(entries) {
         }
 
         const statusClass = getQueueStatusClass(entry.status);
-        const formattedTime = formatWaitTime(entry.estimatedWaitTime);
-        const joinedAt = formatJoinedTime(entry.joinedAt);
+
+        // NEW: Calculate actual remaining wait time based on elapsed time
+        const joinedAt = new Date(entry.joinedAt);
+        const now = new Date();
+        const elapsedMinutes = Math.floor((now - joinedAt) / 60000);
+        const remainingWait = Math.max(
+            0,
+            entry.estimatedWaitTime - elapsedMinutes,
+        );
+
+        const formattedTime = formatWaitTime(remainingWait);
+        const joinedAtTime = formatJoinedTime(entry.joinedAt);
 
         row.innerHTML = `
             <td><strong class="position-number">#${entry.position}</strong></td>
@@ -343,7 +379,7 @@ function displayQueue(entries) {
             <td>${escapeHtml(entry.serviceType)}</td>
             <td>${escapeHtml(entry.contactNumber)}</td>
             <td>${formattedTime}</td>
-            <td>${joinedAt}</td>
+            <td>${joinedAtTime}</td>
             <td><span class="status-badge ${statusClass}">${escapeHtml(entry.status)}</span></td>
             <td>
                 <div class="action-buttons">
