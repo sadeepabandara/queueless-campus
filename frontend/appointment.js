@@ -1,16 +1,40 @@
-// appointment.js - Handles appointment booking functionality
-const API_URL = 'http://localhost:8080/api/appointments';
+// appointment.js - Handles appointment booking functionality securely
 
+// ==========================
+// Security: Role-based Access Control
+// ==========================
+const role = localStorage.getItem("userRole");
+if (!role || role !== "student") {
+  alert("Unauthorized access! Students only.");
+  window.location.replace("login.html");
+}
+
+// ==========================
+// Configuration
+// ==========================
+const API_URL = 'http://localhost:8080/api/appointments';
 const form = document.getElementById('appointmentForm');
 const message = document.getElementById('message');
 
-// Set minimum date to today
-const dateInput = document.getElementById('appointmentDate');
-if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
+// ==========================
+// Security: XSS Sanitization
+// ==========================
+function sanitize(input) {
+  return input.replace(/[<>]/g, "");
 }
 
+// ==========================
+// Security: Prevent Logic Abuse (No past dates)
+// ==========================
+const dateInput = document.getElementById('appointmentDate');
+if (dateInput) {
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.setAttribute('min', today);
+}
+
+// ==========================
+// Form Submission Handler
+// ==========================
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -69,33 +93,49 @@ form.addEventListener('submit', async (e) => {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
     }
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage(
+      '✗ Error connecting to server. Please try again later.',
+      'error'
+    );
+  } finally {
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  }
 });
 
+// ==========================
+// UI Message Handler
+// ==========================
 function showMessage(text, type) {
-    message.textContent = text;
-    message.className = 'message ' + type;
-    message.style.display = 'block';
+  message.textContent = text;
+  message.className = 'message ' + type;
+  message.style.display = 'block';
 
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        message.style.display = 'none';
-    }, 5000);
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    message.style.display = 'none';
+  }, 5000);
 }
 
+// ==========================
+// Utility Functions
+// ==========================
 function formatDate(dateStr) {
-    const date = new Date(dateStr + 'T00:00:00');
-    return date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 }
 
 function formatTime(timeStr) {
-    const [hours, minutes] = timeStr.split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const hour12 = hour % 12 || 12;
-    return `${hour12}:${minutes} ${ampm}`;
+  const [hours, minutes] = timeStr.split(':');
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minutes} ${ampm}`;
 }

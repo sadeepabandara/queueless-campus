@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - QueueLess Campus</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Sign Up</h2>
+  <form class="appointment-form">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter email" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Create password" oninput="checkStrength()" required>
+      <div id="strengthText" class="strength"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Role:</label>
+      <select id="role" required>
+        <option value="">--Select Role--</option>
+        <option value="student">Student</option>
+        <option value="staff">Staff</option>
+      </select>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-large" onclick="signup()">Sign Up</button>
+
+    <div id="errorMsg" class="message error"></div>
+  </form>
+</div>
+
+<script>
+  function sanitize(input) {
+    return input.replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#x27;");
+  }
+
+  function checkStrength() {
+    const pwd = document.getElementById("password").value;
+    const strengthText = document.getElementById("strengthText");
+
+    if (pwd.length < 6) {
+      strengthText.textContent = "Weak password";
+      strengthText.style.color = "red";
+    } else if (/[A-Z]/.test(pwd) && /[0-9]/.test(pwd)) {
+      strengthText.textContent = "Strong password";
+      strengthText.style.color = "green";
+    } else {
+      strengthText.textContent = "Medium password";
+      strengthText.style.color = "orange";
+    }
+  }
+
+  function signup() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let role = document.getElementById("role").value;
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.textContent = "";
+
+    email = sanitize(email);
+    password = sanitize(password);
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+      errorMsg.textContent = "Invalid email format.";
+      return;
+    }
+
+    if (!email || !password || !role) {
+      errorMsg.textContent = "All fields are required.";
+      return;
+    }
+
+    if (password.length < 6) {
+      errorMsg.textContent = "Password must be at least 6 characters.";
+      return;
+    }
+
+    const user = { email, password, role };
+    localStorage.setItem("user", JSON.stringify(user));
+
+    alert("Account created securely!");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
