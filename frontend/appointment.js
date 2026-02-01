@@ -3,11 +3,11 @@
 // ==========================
 // Security: Role-based Access Control
 // ==========================
-const role = localStorage.getItem('userRole');
-if (!role || role !== 'student') {
-    alert('Unauthorized access! Students only.');
-    window.location.replace('login.html');
-}
+// const role = localStorage.getItem('userRole');
+// if (!role || role !== 'student') {
+//     alert('Unauthorized access! Students only.');
+//     window.location.replace('login.html');
+// }
 
 // ==========================
 // Configuration
