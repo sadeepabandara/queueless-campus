@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | QueueLess Campus</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2><i class="fas fa-graduation-cap"></i> QueueLess Campus</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="signup.html"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="auth-section">
+        <div class="auth-container">
+
+            <!-- Login Card -->
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h1>Welcome Back</h1>
+                    <p>Login to your QueueLess Campus account</p>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="john.doe@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            <span class="toggle-password" onclick="togglePassword()">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role"><i class="fas fa-user-tag"></i> Select Role</label>
+                        <select id="role" name="role" required>
+                            <option value="">Choose your role</option>
+                            <option value="student">Student</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                        <span>Login</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div id="message" class="auth-message"></div>
+
+                <div class="auth-footer">
+                    <p>Don’t have an account? <a href="signup.html">Create Account</a></p>
+                </div>
+            </div>
+
+            <!-- Features Sidebar -->
+            <div class="auth-features">
+                <h2>Why QueueLess Campus?</h2>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Save Time</h3>
+                        <p>Skip long queues and manage appointments easily.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Live Updates</h3>
+                        <p>Track queue progress with real-time notifications.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Easy Booking</h3>
+                        <p>Book appointments anytime, anywhere.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Toggle Password Visibility
+        function togglePassword() {
+            const passwordField = document.getElementById("password");
+            const icon = document.querySelector(".toggle-password i");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        const loginForm = document.getElementById("loginForm");
+        const messageDiv = document.getElementById("message");
+        const loginBtn = document.getElementById("loginBtn");
+        let retryAfter = 0;
+        let countdownInterval = null;
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Check if locked out
+            if (retryAfter > 0) {
+                showMessage(`Too many attempts. Please wait ${retryAfter} seconds before trying again.`, "error");
+                return;
+            }
+
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+
+            if (!email || !password || !role) {
+                showMessage("Please fill in all fields.", "error");
+                return;
+            }
+
+            // Loading button state
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            loginBtn.disabled = true;
+
+            try {
+                const response = await fetch("http://localhost:5001/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        role
+                    })
+                });
+
+                const data = await response.json();
+
+                // Check for rate limit headers
+                const remainingHeader = response.headers.get('X-RateLimit-Remaining');
+                const resetHeader = response.headers.get('X-RateLimit-Reset');
+
+                if (response.ok) {
+                    showMessage("Login successful! Redirecting...", "success");
+
+                    // Stop any countdown
+                    if (countdownInterval) {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
+                    }
+
+                    // Store token if backend sends it
+                    if (data.token) {
+                        localStorage.setItem("token", data.token);
+                    }
+
+                    // Store user info
+                    localStorage.setItem("userRole", role);
+                    localStorage.setItem("userEmail", email);
+
+                    setTimeout(() => {
+                        if (role === "staff") {
+                            window.location.href = "staff.html";
+                        } else {
+                            window.location.href = "appointment.html";
+                        }
+                    }, 1500);
+
+                } else {
+                    // Handle rate limiting
+                    if (data.locked || response.status === 429) {
+                        const waitTime = data.retryAfter || 60;
+                        retryAfter = waitTime;
+                        
+                        showMessage(data.message || "Too many failed attempts. Account temporarily locked.", "error");
+                        
+                        // Start countdown
+                        loginBtn.innerHTML = `<span>Wait ${retryAfter}s</span>`;
+                        loginBtn.disabled = true;
+                        
+                        countdownInterval = setInterval(() => {
+                            retryAfter--;
+                            if (retryAfter > 0) {
+                                loginBtn.innerHTML = `<span>Wait ${retryAfter}s</span>`;
+                            } else {
+                                clearInterval(countdownInterval);
+                                countdownInterval = null;
+                                loginBtn.innerHTML = '<span>Login</span> <i class="fas fa-arrow-right"></i>';
+                                loginBtn.disabled = false;
+                                showMessage("You can try logging in again now.", "info");
+                            }
+                        }, 1000);
+                    } else if (data.attemptsRemaining !== undefined) {
+                        // Show attempts remaining
+                        showMessage(`${data.message} (${data.attemptsRemaining} attempts remaining)`, "error");
+                        loginBtn.innerHTML = '<span>Login</span> <i class="fas fa-arrow-right"></i>';
+                        loginBtn.disabled = false;
+                    } else {
+                        showMessage(data.message || "Invalid credentials. Please try again.", "error");
+                        loginBtn.innerHTML = '<span>Login</span> <i class="fas fa-arrow-right"></i>';
+                        loginBtn.disabled = false;
+                    }
+                }
+
+            } catch (error) {
+                console.error("Login error:", error);
+                showMessage("Network error. Please try again.", "error");
+                loginBtn.innerHTML = '<span>Login</span> <i class="fas fa-arrow-right"></i>';
+                loginBtn.disabled = false;
+            }
+        });
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `auth-message ${type}`;
+            messageDiv.style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
