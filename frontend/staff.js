@@ -9,9 +9,12 @@ let queueAutoRefreshInterval = null; // NEW: Auto-refresh interval
 // ==================== INITIALIZATION ====================
 
 window.onload = () => {
+    console.log('QueueLess Campus - Staff Dashboard loaded');
+
     // Load appointments by default
     loadAppointments();
     setupEventListeners();
+    initializeAnimations();
 };
 
 function setupEventListeners() {
@@ -41,6 +44,76 @@ function setupEventListeners() {
     };
 }
 
+// ==========================
+// ANIMATIONS - Page Load
+// ==========================
+function initializeAnimations() {
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe dashboard sections
+    document.querySelectorAll('.dashboard-header, .tab-container, .tab-content, .stats-container, .filter-section').forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(element);
+    });
+
+    // Animate buttons on hover
+    const buttons = document.querySelectorAll('button, .btn, .tab-button');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            this.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+        });
+
+        button.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '';
+        });
+    });
+
+    // Set active nav
+    setActiveNav();
+}
+
+// Add active class to current nav item
+function setActiveNav() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
+}
+
 // ==================== TAB SWITCHING ====================
 
 function switchTab(tabName) {
@@ -48,20 +121,46 @@ function switchTab(tabName) {
     const tabs = document.querySelectorAll('.tab-button');
     tabs.forEach((tab) => tab.classList.remove('active'));
 
-    // Update sections
+    // Update sections with animation
     const sections = document.querySelectorAll('.tab-content');
-    sections.forEach((section) => section.classList.remove('active'));
+    sections.forEach((section) => {
+        if (section.classList.contains('active')) {
+            section.style.opacity = '1';
+            setTimeout(() => {
+                section.style.opacity = '0';
+                setTimeout(() => {
+                    section.classList.remove('active');
+                }, 300);
+            }, 0);
+        }
+    });
 
     if (tabName === 'appointments') {
         document.getElementById('appointmentsTab').classList.add('active');
-        document.getElementById('appointmentsSection').classList.add('active');
+        setTimeout(() => {
+            const appointmentsSection = document.getElementById('appointmentsSection');
+            appointmentsSection.classList.add('active');
+            appointmentsSection.style.opacity = '0';
+            setTimeout(() => {
+                appointmentsSection.style.opacity = '1';
+                appointmentsSection.style.transition = 'opacity 0.3s ease';
+            }, 50);
+        }, 300);
         loadAppointments();
 
         // NEW: Stop queue auto-refresh when switching to appointments
         stopQueueAutoRefresh();
     } else if (tabName === 'queue') {
         document.getElementById('queueTab').classList.add('active');
-        document.getElementById('queueSection').classList.add('active');
+        setTimeout(() => {
+            const queueSection = document.getElementById('queueSection');
+            queueSection.classList.add('active');
+            queueSection.style.opacity = '0';
+            setTimeout(() => {
+                queueSection.style.opacity = '1';
+                queueSection.style.transition = 'opacity 0.3s ease';
+            }, 50);
+        }, 300);
         loadQueue();
 
         // NEW: Start queue auto-refresh when switching to queue tab
@@ -127,11 +226,15 @@ function displayAppointments(appointments) {
 
     tableBody.innerHTML = '';
 
-    appointments.forEach((app) => {
+    appointments.forEach((app, index) => {
         const row = document.createElement('tr');
         const statusClass = getAppointmentStatusClass(app.status);
         const formattedDate = formatDate(app.appointmentDate);
         const formattedTime = formatTime(app.appointmentTime);
+
+        // Animation: Stagger table rows
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
 
         row.innerHTML = `
             <td><strong>${escapeHtml(app.studentName)}</strong></td>
@@ -149,6 +252,13 @@ function displayAppointments(appointments) {
         `;
 
         tableBody.appendChild(row);
+
+        // Trigger animation
+        setTimeout(() => {
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        }, 50 * index);
     });
 }
 
@@ -206,14 +316,27 @@ function openAppointmentModal(appointmentId) {
     if (modal) {
         modal.classList.add('active');
         modal.style.display = 'flex';
+
+        // Animation: Fade in modal
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            modal.style.transition = 'opacity 0.3s ease';
+        }, 10);
     }
 }
 
 function closeAppointmentModal() {
     const modal = document.getElementById('appointmentModal');
     if (modal) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
+        modal.style.opacity = '1';
+        setTimeout(() => {
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }, 300);
+        }, 0);
     }
     const form = document.getElementById('updateAppointmentForm');
     if (form) form.reset();
@@ -225,6 +348,12 @@ async function handleAppointmentUpdate(e) {
     const message = document.getElementById('appointmentUpdateMessage');
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
+
+    // Button click animation
+    submitBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        submitBtn.style.transform = 'scale(1)';
+    }, 200);
 
     submitBtn.textContent = 'Saving...';
     submitBtn.disabled = true;
@@ -353,11 +482,15 @@ function displayQueue(entries) {
         return a.position - b.position;
     });
 
-    entries.forEach((entry) => {
+    entries.forEach((entry, index) => {
         const row = document.createElement('tr');
         if (entry.status === 'In Progress') {
             row.classList.add('row-in-progress');
         }
+
+        // Animation: Stagger table rows
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
 
         const statusClass = getQueueStatusClass(entry.status);
 
@@ -390,6 +523,13 @@ function displayQueue(entries) {
         `;
 
         tableBody.appendChild(row);
+
+        // Trigger animation
+        setTimeout(() => {
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        }, 50 * index);
     });
 }
 
@@ -412,9 +552,34 @@ function updateQueueStatistics(entries) {
         (e) => e.status === 'Completed',
     ).length;
 
-    document.getElementById('totalWaiting').textContent = waitingCount;
-    document.getElementById('totalInProgress').textContent = inProgressCount;
-    document.getElementById('totalCompleted').textContent = completedCount;
+    // Animate stat counters
+    animateStatCounter('totalWaiting', waitingCount);
+    animateStatCounter('totalInProgress', inProgressCount);
+    animateStatCounter('totalCompleted', completedCount);
+}
+
+// Animate stat counters
+function animateStatCounter(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const currentValue = parseInt(element.textContent) || 0;
+    const increment = (targetValue - currentValue) / 20;
+    let current = currentValue;
+
+    const updateCounter = () => {
+        current += increment;
+        if ((increment > 0 && current < targetValue) || (increment < 0 && current > targetValue)) {
+            element.textContent = Math.floor(current);
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = targetValue;
+        }
+    };
+
+    if (currentValue !== targetValue) {
+        updateCounter();
+    }
 }
 
 function filterQueue() {
@@ -451,14 +616,27 @@ function openQueueModal(entryId) {
     if (modal) {
         modal.classList.add('active');
         modal.style.display = 'flex';
+
+        // Animation: Fade in modal
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            modal.style.transition = 'opacity 0.3s ease';
+        }, 10);
     }
 }
 
 function closeQueueModal() {
     const modal = document.getElementById('queueModal');
     if (modal) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
+        modal.style.opacity = '1';
+        setTimeout(() => {
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }, 300);
+        }, 0);
     }
     const form = document.getElementById('updateQueueForm');
     if (form) form.reset();
@@ -470,6 +648,12 @@ async function handleQueueUpdate(e) {
     const message = document.getElementById('queueUpdateMessage');
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
+
+    // Button click animation
+    submitBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        submitBtn.style.transform = 'scale(1)';
+    }, 200);
 
     submitBtn.textContent = 'Saving...';
     submitBtn.disabled = true;
@@ -542,7 +726,17 @@ function showMessage(element, text, type) {
     if (!element) return;
     element.textContent = text;
     element.className = 'message ' + type;
+
+    // Animation: Fade in
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(-10px)';
     element.style.display = 'block';
+
+    setTimeout(() => {
+        element.style.opacity = '1';
+        element.style.transform = 'translateY(0)';
+        element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    }, 10);
 }
 
 function formatDate(dateStr) {
