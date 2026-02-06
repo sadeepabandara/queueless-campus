@@ -206,4 +206,9 @@ describe('Appointment Controller - Unit Tests', () => {
             expect(response.body.error).toBe('Appointment not found');
         });
     });
+
+    // Clean database after each test
+    afterAll(async () => {
+        await cleanupDatabase();
+    });
 });

@@ -20,14 +20,14 @@ window.onload = () => {
 // Initialize all animations
 function initializeAnimations() {
     // Add smooth scrolling for all anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 target.scrollIntoView({
                     behavior: 'smooth',
-                    block: 'start'
+                    block: 'start',
                 });
             }
         });
@@ -36,11 +36,11 @@ function initializeAnimations() {
     // Add animation observer for page elements
     const observerOptions = {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        rootMargin: '0px 0px -50px 0px',
     };
 
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
@@ -49,16 +49,20 @@ function initializeAnimations() {
     }, observerOptions);
 
     // Observe queue sections
-    document.querySelectorAll('.queue-container, .queue-card, .queue-status, .join-queue-form, .current-queue-section, .queue-list-section').forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(element);
-    });
+    document
+        .querySelectorAll(
+            '.queue-container, .queue-card, .queue-status, .join-queue-form, .current-queue-section, .queue-list-section',
+        )
+        .forEach((element) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(element);
+        });
 
     // Add focus animation to form inputs
     const formInputs = document.querySelectorAll('input, select, textarea');
-    formInputs.forEach(input => {
+    formInputs.forEach((input) => {
         input.addEventListener('focus', function () {
             this.parentElement.style.transform = 'scale(1.02)';
             this.parentElement.style.transition = 'transform 0.3s ease';
@@ -71,7 +75,7 @@ function initializeAnimations() {
 
     // Animate buttons on hover
     const buttons = document.querySelectorAll('button, .btn, .tab-btn');
-    buttons.forEach(button => {
+    buttons.forEach((button) => {
         button.addEventListener('mouseenter', function () {
             this.style.transform = 'translateY(-2px)';
             this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
@@ -90,8 +94,9 @@ function initializeAnimations() {
 
 // Add active class to current nav item
 function setActiveNav() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.nav-menu a').forEach(link => {
+    const currentPage =
+        window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-menu a').forEach((link) => {
         if (link.getAttribute('href') === currentPage) {
             link.classList.add('active');
         }
@@ -154,19 +159,23 @@ form.addEventListener('submit', async (e) => {
 
             // Animate section transition
             document.getElementById('joinQueueSection').style.opacity = '1';
-            document.getElementById('joinQueueSection').style.transform = 'scale(1)';
+            document.getElementById('joinQueueSection').style.transform =
+                'scale(1)';
             setTimeout(() => {
                 document.getElementById('joinQueueSection').style.opacity = '0';
-                document.getElementById('joinQueueSection').style.transform = 'scale(0.95)';
+                document.getElementById('joinQueueSection').style.transform =
+                    'scale(0.95)';
                 setTimeout(() => {
-                    document.getElementById('joinQueueSection').style.display = 'none';
+                    document.getElementById('joinQueueSection').style.display =
+                        'none';
                     statusSection.style.display = 'block';
                     statusSection.style.opacity = '0';
                     statusSection.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         statusSection.style.opacity = '1';
                         statusSection.style.transform = 'scale(1)';
-                        statusSection.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        statusSection.style.transition =
+                            'opacity 0.5s ease, transform 0.5s ease';
                     }, 50);
                 }, 300);
             }, 100);
@@ -204,7 +213,7 @@ function displayQueueStatus(queueEntry) {
     // Animate position number
     positionEl.style.transform = 'scale(0.8)';
     positionEl.style.opacity = '0';
-    positionEl.textContent = #${ queueEntry.position };
+    positionEl.textContent = `#${queueEntry.position}`;
     setTimeout(() => {
         positionEl.style.transform = 'scale(1)';
         positionEl.style.opacity = '1';
@@ -215,7 +224,8 @@ function displayQueueStatus(queueEntry) {
     const targetTime = queueEntry.estimatedWaitTime;
     animateCounter(waitEl, 0, targetTime, 1000, (val) => formatWaitTime(val));
 
-    document.getElementById('queueService').textContent = queueEntry.serviceType;
+    document.getElementById('queueService').textContent =
+        queueEntry.serviceType;
 
     statusBadge.textContent = queueEntry.status;
     statusBadge.className =
@@ -240,7 +250,9 @@ function animateCounter(element, start, end, duration, formatter) {
     const updateCounter = () => {
         current += increment;
         if (current < end) {
-            element.textContent = formatter ? formatter(Math.floor(current)) : Math.floor(current);
+            element.textContent = formatter
+                ? formatter(Math.floor(current))
+                : Math.floor(current);
             requestAnimationFrame(updateCounter);
         } else {
             element.textContent = formatter ? formatter(end) : end;
@@ -253,7 +265,7 @@ function animateCounter(element, start, end, duration, formatter) {
 // Load queue status by ID
 async function loadQueueStatus(queueId) {
     try {
-        const response = await fetch(${ API_URL } / ${ queueId });
+        const response = await fetch(`${API_URL}/${queueId}`);
 
         if (response.ok) {
             const queueEntry = await response.json();
@@ -316,7 +328,8 @@ function handleQueueCompletion() {
             setTimeout(() => {
                 joinSection.style.opacity = '1';
                 joinSection.style.transform = 'scale(1)';
-                joinSection.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                joinSection.style.transition =
+                    'opacity 0.5s ease, transform 0.5s ease';
             }, 50);
         }, 300);
     }, 100);
@@ -346,7 +359,7 @@ async function refreshWaitTime() {
     }
 
     try {
-        const response = await fetch(${ API_URL } / ${ currentQueueId } / waittime);
+        const response = await fetch(`${API_URL}/${currentQueueId}/waittime`);
 
         if (response.ok) {
             const data = await response.json();
@@ -360,12 +373,13 @@ async function refreshWaitTime() {
             // Animate updates
             const positionEl = document.getElementById('queuePosition');
             positionEl.style.transform = 'scale(1.1)';
-            positionEl.textContent = #${ data.position };
+            positionEl.textContent = `#${data.position}`;
             setTimeout(() => {
                 positionEl.style.transform = 'scale(1)';
             }, 300);
 
-            document.getElementById('estimatedWait').textContent = formatWaitTime(data.estimatedWaitTime);
+            document.getElementById('estimatedWait').textContent =
+                formatWaitTime(data.estimatedWaitTime);
 
             const statusBadge = document.getElementById('queueStatus');
             statusBadge.textContent = data.status;
@@ -424,7 +438,7 @@ async function leaveQueue() {
     leaveBtn.disabled = true;
 
     try {
-        const response = await fetch(${ API_URL } / ${ currentQueueId }, {
+        const response = await fetch(`${API_URL}/${currentQueueId}`, {
             method: 'DELETE',
         });
 
@@ -466,9 +480,9 @@ async function loadCurrentQueues(serviceType = null) {
         '<p style="text-align: center; padding: 2rem;">Loading...</p>';
 
     try {
-        let url = ${ API_URL }?status = Waiting;
+        let url = `${API_URL}?status=Waiting`;
         if (serviceType && serviceType !== 'all') {
-            url += & serviceType=${ encodeURIComponent(serviceType) };
+            url += `&serviceType=${encodeURIComponent(serviceType)}`;
         }
 
         const response = await fetch(url);
@@ -515,7 +529,7 @@ function displayQueues(queues) {
 
         const serviceHeader = document.createElement('h3');
         serviceHeader.className = 'service-header';
-        serviceHeader.innerHTML = ${ serviceType } <span class="queue-count">${groupedQueues[serviceType].length} in queue</span>;
+        serviceHeader.innerHTML = `${serviceType} <span class="queue-count">${groupedQueues[serviceType].length} in queue</span>`;
         serviceGroup.appendChild(serviceHeader);
 
         groupedQueues[serviceType].forEach((queue, index) => {
@@ -552,7 +566,8 @@ function displayQueues(queues) {
             setTimeout(() => {
                 queueItem.style.opacity = '1';
                 queueItem.style.transform = 'translateX(0)';
-                queueItem.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                queueItem.style.transition =
+                    'opacity 0.4s ease, transform 0.4s ease';
             }, 100 * index);
         });
 
@@ -576,13 +591,13 @@ function filterByService(serviceType) {
 function formatWaitTime(minutes) {
     if (minutes < 1) return 'Less than a minute';
     if (minutes === 1) return '1 minute';
-    if (minutes < 60) return ${ minutes } minutes;
+    if (minutes < 60) return `${minutes} minutes`;
 
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
 
-    if (mins === 0) return ${ hours } hour${ hours > 1 ? 's' : '' };
-    return ${ hours } hour${ hours > 1 ? 's' : '' } ${ mins } minute${ mins > 1 ? 's' : '' };
+    if (mins === 0) return `${hours} hour${hours > 1 ? 's' : ''}`;
+    return `${hours} hour${hours > 1 ? 's' : ''} ${mins} minute${mins > 1 ? 's' : ''}`;
 }
 
 // Show message (with animation)

@@ -296,4 +296,9 @@ describe('Queue Controller - Unit Tests', () => {
             expect(response.body.error).toBe('Queue entry not found');
         });
     });
+
+    // Clean database after each test
+    afterAll(async () => {
+        await cleanupDatabase();
+    });
 });

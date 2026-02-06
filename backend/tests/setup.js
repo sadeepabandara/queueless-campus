@@ -8,7 +8,7 @@ beforeAll(async () => {
     // Use test database or the same database
     // In production, you'd use a separate test database
     const mongoUri =
-        process.env.MONGO_URI || 'mongodb://localhost:27017/queueless-test';
+        process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/queueless-test';
 
     try {
         await mongoose.connect(mongoUri);
